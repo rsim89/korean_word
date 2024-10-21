@@ -163,7 +163,7 @@ function checkMatch() {
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
         
-        // Use SweetAlert for a custom pop-up message for correct match
+        // Show a pop-up message for a correct match
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
@@ -176,23 +176,23 @@ function checkMatch() {
         // Play the "wrong" sound when the answer is incorrect
         playSound('wrong.mp3');
 
-        // Use SweetAlert for a custom pop-up message for incorrect match
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: 'Try again. 😞',
-            confirmButtonText: 'OK'
-        });
-
-        document.getElementById('message').innerText = 'Try again!';
+        // Use setTimeout to flip the cards back after a short delay, allowing time for the sound to play
         setTimeout(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Try again. 😞',
+                confirmButtonText: 'OK'
+            });
+
+            // Flip the cards back to their original state
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
-        }, 1000);
+            document.getElementById('message').innerText = 'Try again!';
+        }, 1000); // Adjust the delay to match the duration of the "wrong.mp3" sound if needed
     }
-
     selectedCards = [];
     attempt += 1;
 
@@ -201,7 +201,6 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
-
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
