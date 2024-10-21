@@ -36,7 +36,11 @@ function loadWordPairsFromChapter(chapter) {
                 if (row.length >= 3) {
                     const korean = row[0];
                     const english = row[1];
-                    const soundFile = row[2]; // Sound file path from the "Sound" column
+                    let soundFile = row[2];
+                    // Ensure the sound file ends with ".mp3"
+                    if (!soundFile.endsWith('.mp3')) {
+                        soundFile += '.mp3';
+                    }
                     wordPairs.push({ korean, english, soundFile });
                 }
             }
@@ -80,12 +84,7 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
-
-        // Ensure the soundFile includes the ".mp3" extension
-        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
-        if (!soundFile.endsWith('.mp3')) {
-            soundFile += '.mp3';
-        }
+        const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
         card.dataset.soundFile = soundFile;
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
@@ -93,7 +92,17 @@ function createCards() {
 }
 
 function startGame() {
+    resetGame(); // Reset the game state
+
     const chapter = document.getElementById('chapter').value;
+    if (!chapter) {
+        alert('Please select a chapter.');
+        return;
+    }
+
+    const difficulty = document.getElementById('difficulty').value || 'medium';
+    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
+
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -102,11 +111,11 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
+    // Hide the practice list if visible
+    document.getElementById('practice-list').style.display = 'none';
+    document.querySelector('.game-board').style.display = 'flex';
 
+    // Load word pairs based on the selected chapter
     loadWordPairsFromChapter(chapter);
 }
 
@@ -127,18 +136,8 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    // Check if the soundFile does not already end with ".mp3"
-    if (!soundFile.endsWith('.mp3')) {
-        soundFile += '.mp3'; // Add ".mp3" if it's missing
-    }
-
-    // Construct the full URL for the audio file
     const audioPath = `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`;
-
-    // Create a new Audio object with the file URL
     const audio = new Audio(audioPath);
-
-    // Play the audio file
     audio.play().catch(error => {
         console.error('Error playing the audio file:', error);
     });
@@ -149,7 +148,6 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -158,33 +156,23 @@ function checkMatch() {
     if (match) {
         score += 10;
         document.getElementById('score').innerText = `Score: ${score}`;
-
-        // Change the background color of matched cards to yellow and keep them revealed
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
-        firstCard.style.backgroundColor = '#ffd700'; // Yellow color for matched cards
-        secondCard.style.backgroundColor = '#ffd700'; // Yellow color for matched cards
-        firstCard.innerText = firstCard.dataset.word; // Keep the word visible
-        secondCard.innerText = secondCard.dataset.word; // Keep the word visible
-
-        // Display message for correct match
+        firstCard.style.backgroundColor = '#ffd700';
+        secondCard.style.backgroundColor = '#ffd700';
         document.getElementById('message').innerHTML = `<span style="color: green;">You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!</span>`;
     } else {
-        // If not matched, flip the cards back after a delay
         setTimeout(() => {
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
-            firstCard.style.backgroundColor = ''; // Reset to original background
+            firstCard.style.backgroundColor = '';
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
-            secondCard.style.backgroundColor = ''; // Reset to original background
-
-            // Display message for incorrect match
+            secondCard.style.backgroundColor = '';
             document.getElementById('message').innerHTML = `<span style="color: red;">Oops... try again. 😞 The word pair '${firstWord}' and '${secondWord}' does not match.</span>`;
-        }, 1000); // 1-second delay before flipping cards back
+        }, 1000);
     }
 
-    // Clear the selected cards
     selectedCards = [];
     attempt += 1;
 
@@ -194,72 +182,36 @@ function checkMatch() {
     }
 }
 
-
-document.getElementById('start-button').addEventListener('click', startGame);
-document.getElementById('reset-button').addEventListener('click', startGame);
-document.getElementById('practice-button').addEventListener('click', showPracticeMode);
-
-function startGame() {
-    resetGame(); // Reset the game state
-
-    const difficulty = document.getElementById('difficulty').value || 'medium';
-    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
-
-    score = 0;
-    attempt = 0;
-    selectedCards = [];
-
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
-
-    // Hide the practice list if it is visible
-    document.getElementById('practice-list').style.display = 'none';
-    document.querySelector('.game-board').style.display = 'flex';
-
-    // Load word pairs based on the selected chapter
-    const chapter = document.getElementById('chapter').value;
-    loadWordPairsFromChapter(chapter);
-}
-
 function showPracticeMode() {
-    resetGame(); // Reset the game state
-
+    resetGame();
     const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = ''; // Clear any previous content
-    practiceList.style.display = 'block'; // Show the practice list
-    document.querySelector('.game-board').style.display = 'none'; // Hide the game board during practice
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
 
-    // Display the word pairs in the practice list
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
         practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
-
-        // Add an event listener to play the sound when the item is clicked
         practiceItem.addEventListener('click', () => {
             if (pair.soundFile) {
-                playSound(pair.soundFile); // Play the sound file if available
+                playSound(pair.soundFile);
             }
         });
-
         practiceList.appendChild(practiceItem);
     });
 }
 
 function resetGame() {
-    // Clear any existing cards from the game board
     document.getElementById('english-cards').innerHTML = '';
     document.getElementById('korean-cards').innerHTML = '';
-
-    // Clear the message and score
     document.getElementById('message').innerText = '';
     document.getElementById('score').innerText = 'Score: 0';
-
-    // Hide the reset button
     document.getElementById('reset-button').style.display = 'none';
-
-    // Clear selected cards and word pairs
     selectedCards = [];
     wordPairs = [];
 }
+
+document.getElementById('start-button').addEventListener('click', startGame);
+document.getElementById('reset-button').addEventListener('click', startGame);
+document.getElementById('practice-button').addEventListener('click', showPracticeMode);
