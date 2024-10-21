@@ -14,11 +14,8 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    // Construct the path to the chapter file
     const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
-    console.log("Loading file:", filePath); // Debug log
 
-    // Fetch the file and load word pairs
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
@@ -27,7 +24,6 @@ function loadWordPairsFromChapter(chapter) {
             return response.arrayBuffer();
         })
         .then(data => {
-            console.log("File loaded successfully."); // Debug log
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
@@ -47,7 +43,7 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
+            wordPairs = wordPairs.slice(0, 10);
             createCards();
         })
         .catch(error => {
@@ -93,20 +89,12 @@ function createCards() {
 }
 
 function startGame() {
-    console.log("Start Game function called."); // Debug log
-
-    resetGame(); // Reset the game state
-
+    resetGame();
     const chapter = document.getElementById('chapter').value;
-    console.log("Selected chapter:", chapter); // Debug log
-
     if (!chapter) {
         alert('Please select a chapter.');
         return;
     }
-
-    const difficulty = document.getElementById('difficulty').value || 'medium';
-    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
 
     score = 0;
     attempt = 0;
@@ -116,14 +104,6 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    // Hide the practice list if visible
-    const practiceList = document.getElementById('practice-list');
-    if (practiceList) {
-        practiceList.style.display = 'none';
-    }
-    document.querySelector('.game-board').style.display = 'flex';
-
-    // Load word pairs based on the selected chapter
     loadWordPairsFromChapter(chapter);
 }
 
@@ -166,19 +146,15 @@ function checkMatch() {
         document.getElementById('score').innerText = `Score: ${score}`;
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
-        firstCard.style.backgroundColor = '#ffd700';
-        secondCard.style.backgroundColor = '#ffd700';
-        document.getElementById('message').innerHTML = `<span style="color: green;">You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!</span>`;
+        document.getElementById('message').innerText = 'Correct match!';
     } else {
         setTimeout(() => {
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
-            firstCard.style.backgroundColor = '';
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
-            secondCard.style.backgroundColor = '';
-            document.getElementById('message').innerHTML = `<span style="color: red;">Oops... try again. 😞 The word pair '${firstWord}' and '${secondWord}' does not match.</span>`;
         }, 1000);
+        document.getElementById('message').innerText = 'Try again.';
     }
 
     selectedCards = [];
@@ -188,26 +164,6 @@ function checkMatch() {
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
-}
-
-function showPracticeMode() {
-    resetGame();
-    const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = '';
-    practiceList.style.display = 'block';
-    document.querySelector('.game-board').style.display = 'none';
-
-    wordPairs.forEach(pair => {
-        const practiceItem = document.createElement('div');
-        practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
-        practiceItem.addEventListener('click', () => {
-            if (pair.soundFile) {
-                playSound(pair.soundFile);
-            }
-        });
-        practiceList.appendChild(practiceItem);
-    });
 }
 
 function resetGame() {
@@ -222,4 +178,3 @@ function resetGame() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
-document.getElementById('practice-button').addEventListener('click', showPracticeMode);
