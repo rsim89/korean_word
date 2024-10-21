@@ -205,3 +205,58 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
+document.getElementById('practice-button').addEventListener('click', showPracticeMode); // New Practice Button Event
+
+function showPracticeMode() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = ''; // Clear any previous content
+    practiceList.style.display = 'block'; // Show the practice list
+    document.querySelector('.game-board').style.display = 'none'; // Hide the game board during practice
+
+    // Display the word pairs in the practice list
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+        practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
+        practiceItem.addEventListener('click', () => {
+            alert(`Selected Pair: ${pair.english} - ${pair.korean}`);
+        });
+        practiceList.appendChild(practiceItem);
+    });
+}
+
+function loadWordPairsFromChapter(chapter) {
+    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+
+    fetch(filePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.arrayBuffer();
+        })
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+            wordPairs = [];
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (row.length >= 3) {
+                    const korean = row[0];
+                    const english = row[1];
+                    const soundFile = row[2];
+                    wordPairs.push({ korean, english, soundFile });
+                }
+            }
+
+            shuffle(wordPairs);
+            wordPairs = wordPairs.slice(0, 10);
+            createCards();
+        })
+        .catch(error => {
+            console.error('Error loading the file:', error);
+            alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
+        });
+}
