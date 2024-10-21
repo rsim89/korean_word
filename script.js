@@ -175,27 +175,22 @@ function checkMatch() {
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        // Play the "wrong" sound when the answer is incorrect and then flip the cards back
-        playSound('wrong.mp3').then(() => {
-            // Flip the cards back after the sound finishes playing
-            setTimeout(() => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Try again. 😞',
-                    confirmButtonText: 'OK'
-                });
+        // Show a SweetAlert pop-up message for an incorrect match
+        setTimeout(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Try again. 😞',
+                confirmButtonText: 'OK'
+            });
 
-                // Flip the cards back to their original state
-                firstCard.classList.remove('revealed');
-                firstCard.innerText = '[CARD]';
-                secondCard.classList.remove('revealed');
-                secondCard.innerText = '[CARD]';
-                document.getElementById('message').innerText = 'Try again!';
-            }, 1000); // 1-second delay before flipping cards back
-        }).catch(error => {
-            console.error('Error playing the "wrong" sound:', error);
-        });
+            // Flip the cards back to their original state
+            firstCard.classList.remove('revealed');
+            firstCard.innerText = '[CARD]';
+            secondCard.classList.remove('revealed');
+            secondCard.innerText = '[CARD]';
+            document.getElementById('message').innerText = 'Try again!';
+        }, 1000); // 1-second delay before flipping cards back
     }
 
     selectedCards = [];
@@ -206,6 +201,7 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
+
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
