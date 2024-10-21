@@ -155,38 +155,29 @@ function checkMatch() {
 
     if (match) {
         score += 10;
-        firstCard.classList.add('matched');
-        secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
 
-        // Show a SweetAlert pop-up message for a correct match
-        Swal.fire({
-            icon: 'success',
-            title: 'Correct!',
-            text: `You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`,
-            confirmButtonText: 'OK'
-        });
+        // Change the background color of matched cards and keep them revealed
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
+        firstCard.style.backgroundColor = '#28a745'; // Green color for matched cards
+        secondCard.style.backgroundColor = '#28a745'; // Green color for matched cards
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        // Show a SweetAlert pop-up message for an incorrect match
+        // If not matched, flip the cards back after a delay
         setTimeout(() => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Try again. 😞',
-                confirmButtonText: 'OK'
-            });
-
-            // Flip the cards back to their original state
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
+            firstCard.style.backgroundColor = ''; // Reset to original background
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
+            secondCard.style.backgroundColor = ''; // Reset to original background
             document.getElementById('message').innerText = 'Try again!';
         }, 1000); // 1-second delay before flipping cards back
     }
 
+    // Clear the selected cards
     selectedCards = [];
     attempt += 1;
 
