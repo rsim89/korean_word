@@ -38,7 +38,7 @@ h1 {
 .card {
     width: 80%;
     margin: 10px 0;
-    background-color: #007bff;
+    background-color: #007bff; /* Blue color for default card */
     color: white;
     display: flex;
     justify-content: center;
@@ -51,26 +51,32 @@ h1 {
     transform-style: preserve-3d;
 }
 
+/* Hover effect for unrevealed cards */
 .card:hover {
     background-color: #0056b3;
 }
 
+/* Revealed cards styling */
 .card.revealed {
-    background-color: #28a745; /* Change background color on reveal */
+    background-color: #ffd700; /* Yellow color for matched cards */
+    color: black; /* Make the text color black for better readability */
 }
 
+/* Styling for cards that are matched */
 .card.matched {
-    background-color: #28a745; /* Green color for matched cards */
+    background-color: #ffd700; /* Yellow color for matched cards */
     cursor: default; /* Disable cursor pointer on matched cards */
     pointer-events: none; /* Prevent further clicks on matched cards */
 }
 
+/* Styling for score display */
 #score {
     margin-top: 20px;
     font-size: 18px;
     font-weight: bold;
 }
 
+/* Message styling for feedback */
 #message {
     margin-top: 10px;
     font-size: 18px;
@@ -78,6 +84,7 @@ h1 {
     font-weight: bold;
 }
 
+/* Reset button styling */
 #reset-button {
     margin: 20px auto;
     padding: 10px 20px;
@@ -89,10 +96,12 @@ h1 {
     display: block;
 }
 
+/* Hover effect for reset button */
 #reset-button:hover {
     background-color: #0056b3;
 }
 
+/* Practice list container styling */
 .practice-list {
     margin-top: 20px;
     font-size: 18px;
@@ -102,6 +111,7 @@ h1 {
     align-items: center;
 }
 
+/* Styling for each practice item */
 .practice-item {
     display: flex;
     justify-content: space-between;
@@ -113,6 +123,15 @@ h1 {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Hover effect for practice items */
 .practice-item:hover {
     background-color: #e9e9e9;
+}
+
+/* Game over styling */
+.game-over {
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+    margin-top: 20px;
 }
