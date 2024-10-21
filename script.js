@@ -14,7 +14,7 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/vocab/${chapter}.xlsx`; // Update the file path to GitHub Pages
+    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`; // Update the file path to GitHub Pages
 
     fetch(filePath)
         .then(response => response.arrayBuffer())
