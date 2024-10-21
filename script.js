@@ -14,12 +14,14 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
+    // Construct the path to the chapter file
     const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
 
+    // Fetch the file and load word pairs
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error('Failed to load the file');
             }
             return response.arrayBuffer();
         })
@@ -34,17 +36,17 @@ function loadWordPairsFromChapter(chapter) {
                 if (row.length >= 3) {
                     const korean = row[0];
                     const english = row[1];
-                    const soundFile = row[2];
+                    const soundFile = row[2]; // Sound file path from the "Sound" column
                     wordPairs.push({ korean, english, soundFile });
                 }
             }
 
             shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10);
+            wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
             createCards();
         })
         .catch(error => {
-            console.error('Error loading the file:', error);
+            console.error('Error loading the chapter file:', error);
             alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
         });
 }
