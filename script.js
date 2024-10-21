@@ -14,10 +14,17 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`; // Update the file path to GitHub Pages
+    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+
+    console.log(`Loading word pairs from: ${filePath}`); // Debugging message
 
     fetch(filePath)
-        .then(response => response.arrayBuffer())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.arrayBuffer();
+        })
         .then(data => {
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
@@ -29,7 +36,7 @@ function loadWordPairsFromChapter(chapter) {
                 if (row.length >= 3) {
                     const korean = row[0];
                     const english = row[1];
-                    const soundFile = row[2]; // Sound file path from the "Sound" column
+                    const soundFile = row[2];
                     wordPairs.push({ korean, english, soundFile });
                 }
             }
@@ -40,7 +47,7 @@ function loadWordPairsFromChapter(chapter) {
         })
         .catch(error => {
             console.error('Error loading the file:', error);
-            alert('Failed to load the selected chapter.');
+            alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
         });
 }
 
@@ -74,7 +81,7 @@ function createCards() {
         card.dataset.language = 'korean';
         card.dataset.word = word;
         const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
-        card.dataset.soundFile = soundFile; // Store the sound file path
+        card.dataset.soundFile = soundFile;
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
     });
@@ -107,7 +114,6 @@ function selectCard(card) {
         card.innerText = card.dataset.word;
         selectedCards.push(card);
 
-        // Play sound if it's a Korean card
         if (card.dataset.language === 'korean') {
             playSound(card.dataset.soundFile);
         }
@@ -119,7 +125,7 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/KORE121/${soundFile}`);
+    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/${soundFile}`);
     audio.play();
 }
 
