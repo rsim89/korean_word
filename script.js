@@ -24,10 +24,11 @@ function loadWordPairsFromFile(file) {
         wordPairs = [];
         for (let i = 1; i < jsonData.length; i++) {
             const row = jsonData[i];
-            if (row.length >= 2) {
+            if (row.length >= 3) {
                 const korean = row[0];
                 const english = row[1];
-                wordPairs.push({ korean, english });
+                const soundFile = row[2]; // Sound file path from the "Sound" column
+                wordPairs.push({ korean, english, soundFile });
             }
         }
 
@@ -67,6 +68,8 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
+        const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+        card.dataset.soundFile = soundFile; // Store the sound file path
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
     });
@@ -98,10 +101,20 @@ function selectCard(card) {
         card.innerText = card.dataset.word;
         selectedCards.push(card);
 
+        // Play sound if it's a Korean card
+        if (card.dataset.language === 'korean') {
+            playSound(card.dataset.soundFile);
+        }
+
         if (selectedCards.length === 2) {
             setTimeout(checkMatch, 1000);
         }
     }
+}
+
+function playSound(soundFile) {
+    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/${soundFile}`);
+    audio.play();
 }
 
 function checkMatch() {
@@ -119,7 +132,6 @@ function checkMatch() {
         score += 10;
         document.getElementById('score').innerText = `Score: ${score}`;
         document.getElementById('message').innerText = 'Correct!';
-        // Keep the cards revealed
     } else {
         document.getElementById('message').innerText = 'Try again!';
         setTimeout(() => {
