@@ -2,11 +2,26 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     max-width: 800px;
     margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+#settings {
+    margin-bottom: 20px;
 }
 
 .game-board {
@@ -23,7 +38,7 @@ body {
 }
 
 .card {
-    width: 100%;
+    width: 80%;
     margin: 10px 0;
     background-color: #007bff;
     color: white;
@@ -34,14 +49,36 @@ body {
     cursor: pointer;
     border-radius: 8px;
     height: 50px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
 .card.revealed {
     background-color: #28a745;
+    transform: scale(1.05);
 }
 
-.hidden {
-    background-color: #dc3545;
+#score {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+#message {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+#reset-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
     color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+}
+
+#reset-button:hover {
+    background-color: #0056b3;
 }
