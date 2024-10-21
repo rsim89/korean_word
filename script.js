@@ -16,6 +16,7 @@ function shuffle(array) {
 function loadWordPairsFromChapter(chapter) {
     // Construct the path to the chapter file
     const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+    console.log("Loading file:", filePath); // Debug log
 
     // Fetch the file and load word pairs
     fetch(filePath)
@@ -26,6 +27,7 @@ function loadWordPairsFromChapter(chapter) {
             return response.arrayBuffer();
         })
         .then(data => {
+            console.log("File loaded successfully."); // Debug log
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
@@ -37,7 +39,6 @@ function loadWordPairsFromChapter(chapter) {
                     const korean = row[0];
                     const english = row[1];
                     let soundFile = row[2];
-                    // Ensure the sound file ends with ".mp3"
                     if (!soundFile.endsWith('.mp3')) {
                         soundFile += '.mp3';
                     }
