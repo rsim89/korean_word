@@ -3,7 +3,6 @@ let score = 0;
 let attempt = 0;
 let maxAttempts = 12;
 let selectedCards = [];
-let isEnglishFirst = true;
 let displayKorean = [];
 let displayEnglish = [];
 
@@ -39,28 +38,39 @@ function loadWordPairsFromFile(file) {
 }
 
 function createCards() {
-    const cardsContainer = document.getElementById('cards');
-    cardsContainer.innerHTML = '';
+    const englishContainer = document.getElementById('english-cards');
+    const koreanContainer = document.getElementById('korean-cards');
+    englishContainer.innerHTML = '';
+    koreanContainer.innerHTML = '';
+
     displayKorean = wordPairs.map(pair => pair.korean);
     displayEnglish = wordPairs.map(pair => pair.english);
     shuffle(displayKorean);
     shuffle(displayEnglish);
 
-    const allWords = isEnglishFirst ? displayEnglish : displayKorean;
-    allWords.forEach((word, index) => {
+    displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
         card.innerText = '[CARD]';
         card.dataset.index = index;
+        card.dataset.language = 'english';
         card.addEventListener('click', () => selectCard(card, word));
-        cardsContainer.appendChild(card);
+        englishContainer.appendChild(card);
+    });
+
+    displayKorean.forEach((word, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerText = '[CARD]';
+        card.dataset.index = index;
+        card.dataset.language = 'korean';
+        card.addEventListener('click', () => selectCard(card, word));
+        koreanContainer.appendChild(card);
     });
 }
 
 function startGame() {
     const difficulty = document.getElementById('difficulty').value;
-    isEnglishFirst = document.getElementById('mode').value === 'E';
-
     maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
 
     score = 0;
@@ -93,11 +103,20 @@ function selectCard(card, word) {
 
 function checkMatch() {
     const [firstSelection, secondSelection] = selectedCards;
+
+    // Check if one card is English and the other is Korean
+    if (firstSelection.card.dataset.language === secondSelection.card.dataset.language) {
+        document.getElementById('message').innerText = 'Select one Korean and one English card!';
+        resetSelectedCards();
+        return;
+    }
+
     const firstWord = firstSelection.word;
     const secondWord = secondSelection.word;
 
-    const match = wordPairs.some(pair => 
-        (pair.korean === firstWord && pair.english === secondWord) || 
+    // Check if the selected pair matches
+    const match = wordPairs.some(pair =>
+        (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
     );
 
@@ -122,6 +141,14 @@ function checkMatch() {
     }
 }
 
+function resetSelectedCards() {
+    selectedCards.forEach(selection => {
+        selection.card.classList.remove('revealed');
+        selection.card.innerText = '[CARD]';
+    });
+    selectedCards = [];
+}
+
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
 document.getElementById('file-input').addEventListener('change', (event) => {
@@ -130,3 +157,6 @@ document.getElementById('file-input').addEventListener('change', (event) => {
         loadWordPairsFromFile(file);
     }
 });
+
+// Initialize the game
+startGame();
