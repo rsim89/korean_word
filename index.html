@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Korean-English Matching Game</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Include SheetJS library for reading Excel files -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -15,17 +13,19 @@
             <label for="chapter">Select Chapter:</label>
             <select id="chapter">
                 <option value="KORE121_ch6_1">Chapter 6 - Part 1</option>
+                <option value="KORE121_ch6_2">Chapter 6 - Part 2</option>
+                <option value="KORE121_ch7_1">Chapter 7 - Part 1</option>
+                <option value="KORE121_ch7_2">Chapter 7 - Part 2</option>
             </select>
             <button id="start-button">Start Game</button>
-            <button id="practice-button">Practice</button> <!-- New Practice Button -->
+            <button id="practice-button">Practice</button>
         </div>
         <div class="game-board">
             <div id="english-cards" class="cards"></div>
             <div id="korean-cards" class="cards"></div>
         </div>
-        <div id="practice-list" class="practice-list" style="display: none;"></div> <!-- Practice List Section -->
+        <div id="message" class="message"></div> <!-- Message element for feedback -->
         <div id="score">Score: 0</div>
-        <div id="message"></div>
         <button id="reset-button" style="display: none;">Restart Game</button>
     </div>
 
