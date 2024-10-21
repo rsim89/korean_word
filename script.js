@@ -157,11 +157,11 @@ function checkMatch() {
         score += 10;
         document.getElementById('score').innerText = `Score: ${score}`;
 
-        // Change the background color of matched cards and keep them revealed
+        // Change the background color of matched cards to yellow and keep them revealed
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
-        firstCard.style.backgroundColor = '#28a745'; // Green color for matched cards
-        secondCard.style.backgroundColor = '#28a745'; // Green color for matched cards
+        firstCard.style.backgroundColor = '#ffd700'; // Yellow color for matched cards
+        secondCard.style.backgroundColor = '#ffd700'; // Yellow color for matched cards
         firstCard.innerText = firstCard.dataset.word; // Keep the word visible
         secondCard.innerText = secondCard.dataset.word; // Keep the word visible
 
@@ -191,7 +191,6 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
-
 
 
 document.getElementById('start-button').addEventListener('click', startGame);
