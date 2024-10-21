@@ -78,7 +78,12 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
-        const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+
+        // Ensure the soundFile includes the ".mp3" extension
+        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+        if (!soundFile.endsWith('.mp3')) {
+            soundFile += '.mp3';
+        }
         card.dataset.soundFile = soundFile;
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
@@ -120,8 +125,22 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/KORE121/${soundFile}`);
-    audio.play();
+    // Check if the soundFile does not already end with ".mp3"
+    if (!soundFile.endsWith('.mp3')) {
+        soundFile += '.mp3'; // Add ".mp3" if it's missing
+    }
+
+    // Construct the full URL for the audio file
+    const audioPath = `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`;
+
+    // Create a new Audio object with the file URL
+    const audio = new Audio(audioPath);
+
+    // Play the audio file
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
+        alert('Could not play the audio. Please make sure the file exists and is accessible.');
+    });
 }
 
 function checkMatch() {
