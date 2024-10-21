@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Korean-English Matching Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Include SheetJS library for reading Excel files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Korean-English Matching Game</h1>
+        <div id="settings">
+            <label for="difficulty">Difficulty:</label>
+            <select id="difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            <label for="mode">Mode:</label>
+            <select id="mode">
+                <option value="K">Korean First</option>
+                <option value="E" selected>English First</option>
+            </select>
+            <input type="file" id="file-input" accept=".xlsx" />
+            <button id="start-button">Start Game</button>
+        </div>
+        <div id="cards" class="cards"></div>
+        <div id="score">Score: 0</div>
+        <div id="message"></div>
+        <button id="reset-button" style="display: none;">Restart Game</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
