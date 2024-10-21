@@ -55,7 +55,8 @@ function createCards() {
         card.innerText = '[CARD]';
         card.dataset.index = index;
         card.dataset.language = 'english';
-        card.addEventListener('click', () => selectCard(card, word));
+        card.dataset.word = word;
+        card.addEventListener('click', () => selectCard(card));
         englishContainer.appendChild(card);
     });
 
@@ -65,7 +66,8 @@ function createCards() {
         card.innerText = '[CARD]';
         card.dataset.index = index;
         card.dataset.language = 'korean';
-        card.addEventListener('click', () => selectCard(card, word));
+        card.dataset.word = word;
+        card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
     });
 }
@@ -90,11 +92,11 @@ function startGame() {
     createCards();
 }
 
-function selectCard(card, word) {
+function selectCard(card) {
     if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
         card.classList.add('revealed');
-        card.innerText = word;
-        selectedCards.push({ card, word });
+        card.innerText = card.dataset.word;
+        selectedCards.push(card);
 
         if (selectedCards.length === 2) {
             setTimeout(checkMatch, 1000);
@@ -103,17 +105,9 @@ function selectCard(card, word) {
 }
 
 function checkMatch() {
-    const [firstSelection, secondSelection] = selectedCards;
-
-    // Ensure one card is English and the other is Korean
-    if (firstSelection.card.dataset.language === secondSelection.card.dataset.language) {
-        document.getElementById('message').innerText = 'Select one Korean and one English card!';
-        resetSelectedCards();
-        return;
-    }
-
-    const firstWord = firstSelection.word;
-    const secondWord = secondSelection.word;
+    const [firstCard, secondCard] = selectedCards;
+    const firstWord = firstCard.dataset.word;
+    const secondWord = secondCard.dataset.word;
 
     // Check if the selected pair matches
     const match = wordPairs.some(pair =>
@@ -125,13 +119,14 @@ function checkMatch() {
         score += 10;
         document.getElementById('score').innerText = `Score: ${score}`;
         document.getElementById('message').innerText = 'Correct!';
+        // Keep the cards revealed
     } else {
         document.getElementById('message').innerText = 'Try again!';
         setTimeout(() => {
-            firstSelection.card.classList.remove('revealed');
-            firstSelection.card.innerText = '[CARD]';
-            secondSelection.card.classList.remove('revealed');
-            secondSelection.card.innerText = '[CARD]';
+            firstCard.classList.remove('revealed');
+            firstCard.innerText = '[CARD]';
+            secondCard.classList.remove('revealed');
+            secondCard.innerText = '[CARD]';
         }, 1000);
     }
 
@@ -142,14 +137,6 @@ function checkMatch() {
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
-}
-
-function resetSelectedCards() {
-    selectedCards.forEach(selection => {
-        selection.card.classList.remove('revealed');
-        selection.card.innerText = '[CARD]';
-    });
-    selectedCards = [];
 }
 
 document.getElementById('start-button').addEventListener('click', startGame);
