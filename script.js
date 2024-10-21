@@ -165,7 +165,8 @@ function checkMatch() {
         firstCard.innerText = firstCard.dataset.word; // Keep the word visible
         secondCard.innerText = secondCard.dataset.word; // Keep the word visible
 
-        document.getElementById('message').innerText = 'Correct!';
+        // Display message for correct match
+        document.getElementById('message').innerHTML = `<span style="color: green;">You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!</span>`;
     } else {
         // If not matched, flip the cards back after a delay
         setTimeout(() => {
@@ -175,7 +176,9 @@ function checkMatch() {
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
             secondCard.style.backgroundColor = ''; // Reset to original background
-            document.getElementById('message').innerText = 'Try again!';
+
+            // Display message for incorrect match
+            document.getElementById('message').innerHTML = `<span style="color: red;">Oops... try again. 😞 The word pair '${firstWord}' and '${secondWord}' does not match.</span>`;
         }, 1000); // 1-second delay before flipping cards back
     }
 
@@ -188,6 +191,7 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
+
 
 
 document.getElementById('start-button').addEventListener('click', startGame);
