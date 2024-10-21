@@ -60,7 +60,9 @@ h1 {
 }
 
 .card.matched {
-    background-color: #ffc107;
+    background-color: #28a745; /* Green color for matched cards */
+    cursor: default; /* Disable cursor pointer on matched cards */
+    pointer-events: none; /* Prevent further clicks on matched cards */
 }
 
 #score {
