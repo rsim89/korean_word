@@ -1,9 +1,49 @@
+// ==============================
+// 1. Global Variables
+// ==============================
 let wordPairs = [];
 let score = 0;
 let attempt = 0;
 let maxAttempts = 12;
 let selectedCards = [];
 
+// ==============================
+// 2. Helper Functions
+// ==============================
+function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+}
+
+function resetGame() {
+    console.log("Resetting game..."); // Debug log
+
+    // Clear the game board
+    document.getElementById('english-cards').innerHTML = '';
+    document.getElementById('korean-cards').innerHTML = '';
+
+    // Clear messages and reset the score display
+    document.getElementById('message').innerText = '';
+    document.getElementById('score').innerText = 'Score: 0';
+
+    // Hide the reset button initially
+    document.getElementById('reset-button').style.display = 'none';
+
+    // Reset game variables
+    selectedCards = [];
+    wordPairs = [];
+    score = 0;
+    attempt = 0;
+
+    // Make sure the game board is hidden initially
+    document.querySelector('.game-board').style.display = 'none';
+}
+
+// ==============================
+// 3. Core Game Functions
+// ==============================
 function loadWordPairsFromChapter(chapter) {
     const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
 
@@ -44,39 +84,6 @@ function loadWordPairsFromChapter(chapter) {
             console.error('Error loading the chapter file:', error);
             alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
         });
-}
-
-document.getElementById('start-button').addEventListener('click', startGame);
-
-// Update startGame() to ensure it works correctly after reset
-function startGame() {
-    console.log("Start Game button clicked."); // Debug log
-
-    // Reset the game to ensure a fresh start
-    resetGame();
-
-    const chapter = document.getElementById('chapter').value;
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
-
-    console.log("Loading chapter:", chapter); // Debug log
-
-    // Reset variables for a new game
-    score = 0;
-    attempt = 0;
-    selectedCards = [];
-
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
-
-    // Show the game board
-    document.querySelector('.game-board').style.display = 'flex';
-
-    // Load word pairs for the selected chapter
-    loadWordPairsFromChapter(chapter);
 }
 
 function createCards() {
@@ -160,26 +167,38 @@ function checkMatch() {
     selectedCards = [];
 }
 
-function resetGame() {
-    console.log("Resetting game..."); // Debug log
+// ==============================
+// 4. Event Listeners and Initialization
+// ==============================
+document.getElementById('start-button').addEventListener('click', startGame);
 
-    // Clear the game board
-    document.getElementById('english-cards').innerHTML = '';
-    document.getElementById('korean-cards').innerHTML = '';
+function startGame() {
+    console.log("Start Game button clicked."); // Debug log
 
-    // Clear messages and reset the score display
-    document.getElementById('message').innerText = '';
-    document.getElementById('score').innerText = 'Score: 0';
+    resetGame();
 
-    // Hide the reset button initially
-    document.getElementById('reset-button').style.display = 'none';
+    const chapter = document.getElementById('chapter').value;
+    if (!chapter) {
+        alert('Please select a chapter.');
+        return;
+    }
 
-    // Reset game variables
-    selectedCards = [];
-    wordPairs = [];
+    console.log("Loading chapter:", chapter); // Debug log
+
     score = 0;
     attempt = 0;
+    selectedCards = [];
 
-    // Make sure the game board is hidden initially
-    document.querySelector('.game-board').style.display = 'none';
+    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('message').innerText = '';
+    document.getElementById('reset-button').style.display = 'none';
+    document.querySelector('.game-board').style.display = 'flex';
+
+    loadWordPairsFromChapter(chapter);
 }
+
+// Initialize the game board display on page load
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Page loaded. Initializing game.");
+    resetGame();
+});
