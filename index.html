@@ -10,22 +10,21 @@
     <div class="container">
         <h1>Korean-English Matching Game</h1>
         <div id="settings">
-            <label for="chapter">Select Chapter:</label>
-            <select id="chapter">
-                <option value="KORE121_ch6_1">Chapter 6 - Part 1</option>
-            </select>
+            <input type="file" id="file-upload" accept=".xlsx">
             <button id="start-button">Start Game</button>
-            <button id="practice-button">Practice</button>
+            <button id="reset-button" style="display:none;">Reset Game</button>
         </div>
+
         <div class="game-board">
             <div id="english-cards" class="cards"></div>
             <div id="korean-cards" class="cards"></div>
         </div>
-        <div id="message" class="message"></div> <!-- Message element for feedback -->
+
+        <div id="message"></div>
         <div id="score">Score: 0</div>
-        <button id="reset-button" style="display: none;">Restart Game</button>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
