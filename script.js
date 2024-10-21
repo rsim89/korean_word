@@ -6,8 +6,11 @@ let selectedCards = [];
 
 document.getElementById('start-button').addEventListener('click', startGame);
 
+// Update startGame() to ensure it works correctly after reset
 function startGame() {
     console.log("Start Game button clicked."); // Debug log
+
+    // Reset the game to ensure a fresh start
     resetGame();
 
     const chapter = document.getElementById('chapter').value;
@@ -18,6 +21,7 @@ function startGame() {
 
     console.log("Loading chapter:", chapter); // Debug log
 
+    // Reset variables for a new game
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -25,6 +29,9 @@ function startGame() {
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
+
+    // Show the game board
+    document.querySelector('.game-board').style.display = 'flex';
 
     // Load word pairs for the selected chapter
     loadWordPairsFromChapter(chapter);
@@ -73,20 +80,27 @@ function loadWordPairsFromChapter(chapter) {
 }
 
 function resetGame() {
+    console.log("Resetting game..."); // Debug log
+
+    // Clear the game board
     document.getElementById('english-cards').innerHTML = '';
     document.getElementById('korean-cards').innerHTML = '';
+
+    // Clear messages and reset the score display
     document.getElementById('message').innerText = '';
     document.getElementById('score').innerText = 'Score: 0';
+
+    // Hide the reset button initially
     document.getElementById('reset-button').style.display = 'none';
+
+    // Reset game variables
     selectedCards = [];
     wordPairs = [];
-}
+    score = 0;
+    attempt = 0;
 
-function shuffle(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
+    // Make sure the game board is hidden initially
+    document.querySelector('.game-board').style.display = 'none';
 }
 
 function createCards() {
