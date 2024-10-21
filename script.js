@@ -148,6 +148,7 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
+    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -158,8 +159,15 @@ function checkMatch() {
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
+        
+        // Show pop-up message for correct match
+        alert(`You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`);
+        
         document.getElementById('message').innerText = 'Correct!';
     } else {
+        // Show pop-up message for incorrect match
+        alert('Oops... try again. 😞');
+
         document.getElementById('message').innerText = 'Try again!';
         setTimeout(() => {
             firstCard.classList.remove('revealed');
@@ -177,6 +185,7 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
+
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
