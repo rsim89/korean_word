@@ -195,9 +195,34 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
-document.getElementById('practice-button').addEventListener('click', showPracticeMode); // New Practice Button Event
+document.getElementById('practice-button').addEventListener('click', showPracticeMode);
+
+function startGame() {
+    resetGame(); // Reset the game state
+
+    const difficulty = document.getElementById('difficulty').value || 'medium';
+    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
+
+    score = 0;
+    attempt = 0;
+    selectedCards = [];
+
+    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('message').innerText = '';
+    document.getElementById('reset-button').style.display = 'none';
+
+    // Hide the practice list if it is visible
+    document.getElementById('practice-list').style.display = 'none';
+    document.querySelector('.game-board').style.display = 'flex';
+
+    // Load word pairs based on the selected chapter
+    const chapter = document.getElementById('chapter').value;
+    loadWordPairsFromChapter(chapter);
+}
 
 function showPracticeMode() {
+    resetGame(); // Reset the game state
+
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = ''; // Clear any previous content
     practiceList.style.display = 'block'; // Show the practice list
@@ -220,38 +245,19 @@ function showPracticeMode() {
     });
 }
 
-function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+function resetGame() {
+    // Clear any existing cards from the game board
+    document.getElementById('english-cards').innerHTML = '';
+    document.getElementById('korean-cards').innerHTML = '';
 
-    fetch(filePath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.arrayBuffer();
-        })
-        .then(data => {
-            const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+    // Clear the message and score
+    document.getElementById('message').innerText = '';
+    document.getElementById('score').innerText = 'Score: 0';
 
-            wordPairs = [];
-            for (let i = 1; i < jsonData.length; i++) {
-                const row = jsonData[i];
-                if (row.length >= 3) {
-                    const korean = row[0];
-                    const english = row[1];
-                    const soundFile = row[2];
-                    wordPairs.push({ korean, english, soundFile });
-                }
-            }
+    // Hide the reset button
+    document.getElementById('reset-button').style.display = 'none';
 
-            shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10);
-            createCards();
-        })
-        .catch(error => {
-            console.error('Error loading the file:', error);
-            alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
-        });
+    // Clear selected cards and word pairs
+    selectedCards = [];
+    wordPairs = [];
 }
