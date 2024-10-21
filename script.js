@@ -13,30 +13,35 @@ function shuffle(array) {
     }
 }
 
-function loadWordPairsFromFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+function loadWordPairsFromChapter(chapter) {
+    const filePath = `https://rsim89.github.io/vocab/${chapter}.xlsx`; // Update the file path to GitHub Pages
 
-        wordPairs = [];
-        for (let i = 1; i < jsonData.length; i++) {
-            const row = jsonData[i];
-            if (row.length >= 3) {
-                const korean = row[0];
-                const english = row[1];
-                const soundFile = row[2]; // Sound file path from the "Sound" column
-                wordPairs.push({ korean, english, soundFile });
+    fetch(filePath)
+        .then(response => response.arrayBuffer())
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+            wordPairs = [];
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (row.length >= 3) {
+                    const korean = row[0];
+                    const english = row[1];
+                    const soundFile = row[2]; // Sound file path from the "Sound" column
+                    wordPairs.push({ korean, english, soundFile });
+                }
             }
-        }
 
-        shuffle(wordPairs);
-        wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
-        createCards();
-    };
-    reader.readAsArrayBuffer(file);
+            shuffle(wordPairs);
+            wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
+            createCards();
+        })
+        .catch(error => {
+            console.error('Error loading the file:', error);
+            alert('Failed to load the selected chapter.');
+        });
 }
 
 function createCards() {
@@ -76,6 +81,7 @@ function createCards() {
 }
 
 function startGame() {
+    const chapter = document.getElementById('chapter').value;
     const difficulty = document.getElementById('difficulty').value;
     maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
 
@@ -87,12 +93,12 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    if (wordPairs.length === 0) {
-        alert('Please upload a valid Excel file with word pairs.');
+    if (!chapter) {
+        alert('Please select a chapter.');
         return;
     }
 
-    createCards();
+    loadWordPairsFromChapter(chapter);
 }
 
 function selectCard(card) {
@@ -122,7 +128,6 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -153,12 +158,6 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
-document.getElementById('file-input').addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        loadWordPairsFromFile(file);
-    }
-});
 
 // Initialize the game
 startGame();
