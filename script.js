@@ -92,9 +92,13 @@ function createCards() {
 }
 
 function startGame() {
+    console.log("Start Game function called."); // Debug log
+
     resetGame(); // Reset the game state
 
     const chapter = document.getElementById('chapter').value;
+    console.log("Selected chapter:", chapter); // Debug log
+
     if (!chapter) {
         alert('Please select a chapter.');
         return;
@@ -112,7 +116,10 @@ function startGame() {
     document.getElementById('reset-button').style.display = 'none';
 
     // Hide the practice list if visible
-    document.getElementById('practice-list').style.display = 'none';
+    const practiceList = document.getElementById('practice-list');
+    if (practiceList) {
+        practiceList.style.display = 'none';
+    }
     document.querySelector('.game-board').style.display = 'flex';
 
     // Load word pairs based on the selected chapter
