@@ -32,6 +32,7 @@ function loadWordPairsFromFile(file) {
         }
 
         shuffle(wordPairs);
+        wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
         createCards();
     };
     reader.readAsArrayBuffer(file);
@@ -104,6 +105,7 @@ function selectCard(card, word) {
 function checkMatch() {
     const [firstSelection, secondSelection] = selectedCards;
 
+    // Ensure one card is English and the other is Korean
     if (firstSelection.card.dataset.language === secondSelection.card.dataset.language) {
         document.getElementById('message').innerText = 'Select one Korean and one English card!';
         resetSelectedCards();
@@ -111,8 +113,9 @@ function checkMatch() {
     }
 
     const firstWord = firstSelection.word;
-    const secondWord = secondWord = secondSelection.word;
+    const secondWord = secondSelection.word;
 
+    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -123,11 +126,13 @@ function checkMatch() {
         document.getElementById('score').innerText = `Score: ${score}`;
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        firstSelection.card.classList.remove('revealed');
-        firstSelection.card.innerText = '[CARD]';
-        secondSelection.card.classList.remove('revealed');
-        secondSelection.card.innerText = '[CARD]';
         document.getElementById('message').innerText = 'Try again!';
+        setTimeout(() => {
+            firstSelection.card.classList.remove('revealed');
+            firstSelection.card.innerText = '[CARD]';
+            secondSelection.card.classList.remove('revealed');
+            secondSelection.card.innerText = '[CARD]';
+        }, 1000);
     }
 
     selectedCards = [];
@@ -156,4 +161,5 @@ document.getElementById('file-input').addEventListener('change', (event) => {
     }
 });
 
+// Initialize the game
 startGame();
