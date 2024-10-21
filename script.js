@@ -120,7 +120,7 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/${soundFile}`);
+    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/KORE121/${soundFile}`);
     audio.play();
 }
 
