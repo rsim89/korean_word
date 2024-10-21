@@ -125,26 +125,28 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    // Check if the soundFile does not already end with ".mp3"
-    if (!soundFile.endsWith('.mp3')) {
-        soundFile += '.mp3'; // Add ".mp3" if it's missing
-    }
+    return new Promise((resolve, reject) => {
+        // Check if the soundFile does not already end with ".mp3"
+        if (!soundFile.endsWith('.mp3')) {
+            soundFile += '.mp3'; // Add ".mp3" if it's missing
+        }
 
-    // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
-    const audioPath = soundFile === 'wrong.mp3' 
-        ? `https://rsim89.github.io/korean_word/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
-        : `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`; // Path for other regular sound files
+        // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
+        const audioPath = soundFile === 'wrong.mp3' 
+            ? `https://rsim89.github.io/korean_word/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
+            : `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`; // Path for other regular sound files
 
-    // Create a new Audio object with the file URL
-    const audio = new Audio(audioPath);
+        // Create a new Audio object with the file URL
+        const audio = new Audio(audioPath);
 
-    // Play the audio file
-    audio.play().catch(error => {
-        console.error('Error playing the audio file:', error);
-        alert('Could not play the audio. Please make sure the file exists and is accessible.');
+        // Resolve the promise when the audio ends, or reject it on error
+        audio.onended = resolve;
+        audio.onerror = reject;
+
+        // Play the audio file
+        audio.play().catch(reject);
     });
 }
-
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
