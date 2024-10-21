@@ -125,26 +125,20 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    return new Promise((resolve, reject) => {
-        // Check if the soundFile does not already end with ".mp3"
-        if (!soundFile.endsWith('.mp3')) {
-            soundFile += '.mp3'; // Add ".mp3" if it's missing
-        }
+    // Check if the soundFile does not already end with ".mp3"
+    if (!soundFile.endsWith('.mp3')) {
+        soundFile += '.mp3'; // Add ".mp3" if it's missing
+    }
 
-        // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
-        const audioPath = soundFile === 'wrong.mp3' 
-            ? `https://rsim89.github.io/korean_word/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
-            : `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`; // Path for other regular sound files
+    // Construct the full URL for the audio file
+    const audioPath = `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`;
 
-        // Create a new Audio object with the file URL
-        const audio = new Audio(audioPath);
+    // Create a new Audio object with the file URL
+    const audio = new Audio(audioPath);
 
-        // Resolve the promise when the audio ends, or reject it on error
-        audio.onended = resolve;
-        audio.onerror = reject;
-
-        // Play the audio file
-        audio.play().catch(reject);
+    // Play the audio file
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
     });
 }
 
@@ -218,9 +212,14 @@ function showPracticeMode() {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
         practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
+
+        // Add an event listener to play the sound when the item is clicked
         practiceItem.addEventListener('click', () => {
-            alert(`Selected Pair: ${pair.english} - ${pair.korean}`);
+            if (pair.soundFile) {
+                playSound(pair.soundFile); // Play the sound file if available
+            }
         });
+
         practiceList.appendChild(practiceItem);
     });
 }
