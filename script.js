@@ -16,8 +16,6 @@ function shuffle(array) {
 function loadWordPairsFromChapter(chapter) {
     const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
 
-    console.log(`Loading word pairs from: ${filePath}`); // Debugging message
-
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
@@ -42,7 +40,7 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
+            wordPairs = wordPairs.slice(0, 10);
             createCards();
         })
         .catch(error => {
@@ -89,9 +87,6 @@ function createCards() {
 
 function startGame() {
     const chapter = document.getElementById('chapter').value;
-    const difficulty = document.getElementById('difficulty').value;
-    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
-
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -141,6 +136,8 @@ function checkMatch() {
 
     if (match) {
         score += 10;
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
         document.getElementById('message').innerText = 'Correct!';
     } else {
@@ -164,6 +161,3 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
-
-// Initialize the game
-startGame();
