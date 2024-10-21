@@ -56,8 +56,7 @@ h1 {
 }
 
 .card.revealed {
-    background-color: #28a745;
-    transform: rotateY(180deg);
+    background-color: #28a745; /* Change background color on reveal */
 }
 
 .card.matched {
