@@ -162,6 +162,8 @@ function checkMatch() {
         secondCard.classList.add('matched');
         firstCard.style.backgroundColor = '#28a745'; // Green color for matched cards
         secondCard.style.backgroundColor = '#28a745'; // Green color for matched cards
+        firstCard.innerText = firstCard.dataset.word; // Keep the word visible
+        secondCard.innerText = secondCard.dataset.word; // Keep the word visible
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
