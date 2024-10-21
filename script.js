@@ -162,8 +162,8 @@ function checkMatch() {
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
-        
-        // Show a pop-up message for a correct match
+
+        // Show a SweetAlert pop-up message for a correct match
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
@@ -173,26 +173,29 @@ function checkMatch() {
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        // Play the "wrong" sound when the answer is incorrect
-        playSound('wrong.mp3');
+        // Play the "wrong" sound when the answer is incorrect and then flip the cards back
+        playSound('wrong.mp3').then(() => {
+            // Flip the cards back after the sound finishes playing
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Try again. 😞',
+                    confirmButtonText: 'OK'
+                });
 
-        // Use setTimeout to flip the cards back after a short delay, allowing time for the sound to play
-        setTimeout(() => {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Try again. 😞',
-                confirmButtonText: 'OK'
-            });
-
-            // Flip the cards back to their original state
-            firstCard.classList.remove('revealed');
-            firstCard.innerText = '[CARD]';
-            secondCard.classList.remove('revealed');
-            secondCard.innerText = '[CARD]';
-            document.getElementById('message').innerText = 'Try again!';
-        }, 1000); // Adjust the delay to match the duration of the "wrong.mp3" sound if needed
+                // Flip the cards back to their original state
+                firstCard.classList.remove('revealed');
+                firstCard.innerText = '[CARD]';
+                secondCard.classList.remove('revealed');
+                secondCard.innerText = '[CARD]';
+                document.getElementById('message').innerText = 'Try again!';
+            }, 1000); // 1-second delay before flipping cards back
+        }).catch(error => {
+            console.error('Error playing the "wrong" sound:', error);
+        });
     }
+
     selectedCards = [];
     attempt += 1;
 
