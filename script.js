@@ -130,8 +130,10 @@ function playSound(soundFile) {
         soundFile += '.mp3'; // Add ".mp3" if it's missing
     }
 
-    // Construct the full URL for the audio file
-    const audioPath = `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`;
+    // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
+    const audioPath = soundFile === 'wrong.mp3' 
+        ? `https://rsim89.github.io/korean_word/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
+        : `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`; // Path for other regular sound files
 
     // Create a new Audio object with the file URL
     const audio = new Audio(audioPath);
@@ -142,6 +144,7 @@ function playSound(soundFile) {
         alert('Could not play the audio. Please make sure the file exists and is accessible.');
     });
 }
+
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
@@ -160,13 +163,26 @@ function checkMatch() {
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
         
-        // Show pop-up message for correct match
-        alert(`You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`);
-        
+        // Use SweetAlert for a custom pop-up message for correct match
+        Swal.fire({
+            icon: 'success',
+            title: 'Correct!',
+            text: `You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`,
+            confirmButtonText: 'OK'
+        });
+
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        // Show pop-up message for incorrect match
-        alert('Oops... try again. 😞');
+        // Play the "wrong" sound when the answer is incorrect
+        playSound('wrong.mp3');
+
+        // Use SweetAlert for a custom pop-up message for incorrect match
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Try again. 😞',
+            confirmButtonText: 'OK'
+        });
 
         document.getElementById('message').innerText = 'Try again!';
         setTimeout(() => {
