@@ -104,7 +104,6 @@ function selectCard(card, word) {
 function checkMatch() {
     const [firstSelection, secondSelection] = selectedCards;
 
-    // Check if one card is English and the other is Korean
     if (firstSelection.card.dataset.language === secondSelection.card.dataset.language) {
         document.getElementById('message').innerText = 'Select one Korean and one English card!';
         resetSelectedCards();
@@ -112,9 +111,8 @@ function checkMatch() {
     }
 
     const firstWord = firstSelection.word;
-    const secondWord = secondSelection.word;
+    const secondWord = secondWord = secondSelection.word;
 
-    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -158,5 +156,4 @@ document.getElementById('file-input').addEventListener('change', (event) => {
     }
 });
 
-// Initialize the game
 startGame();
