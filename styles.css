@@ -135,3 +135,17 @@ h1 {
     font-weight: bold;
     margin-top: 20px;
 }
+
+#reset-game-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#reset-game-button:hover {
+    background-color: #c82333;
+}
